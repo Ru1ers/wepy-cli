@@ -8,6 +8,7 @@
       bindrefreshPulling="refreshPulling"
       bindrestore="restore"
     >
+      <!-- 自定义内容 -->
       <div
         class="refresh"
         slot="refresh"
@@ -29,6 +30,7 @@
           />
         </van-cell-group>
       </div>
+      
     </scroll>
     <progress id="axios-progress"></progress>
     <van-toast id="van-toast" />
