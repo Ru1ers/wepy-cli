@@ -32,7 +32,7 @@ export default {
                 dataIsOne: false,
             },
             empty: {
-                img: 'http://coolui.coolwl.cn/assets/mescroll-empty.png'
+                img: '../../assets/images/empty.png'
             },
             refresh: {
                 type: 'diy',
@@ -81,6 +81,7 @@ export default {
             console.log("重置文字为下拉刷新");
         },
         getJdData: function(type, page) {
+            console.log("去请求数据", type)
             if (type == 'refresh') {
                 this.refresherrefresh();
             } else {
@@ -171,6 +172,11 @@ export default {
                             this.scrollJd.pagination.haveData = false;
                             this.scrollJd.pagination.haveMoreData = false;
                             this.scrollJd.pagination.dataIsOne = false;
+                            if (type === fetchType.PULL_DOWN) {
+                                this.refresh(() => {
+                                    this.commitData(dataFieldVal);
+                                });
+                            }
                         } else if (dataFieldVal.length < this.pageSize) {
                             this.scrollJd.pagination.haveMoreData = false;
                             //   this.$emit('on-having');

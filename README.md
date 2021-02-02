@@ -27,8 +27,8 @@ wepy-cli
 │  ├─ assets   --静态资源文件
 │  │  ├─ css   --css文件
 │  │  └─ images  --图片文件
-│  │     ├─ alert.png
-│  │     └─ error.png
+│  │     ├─ loading_bottom.gif
+│  │     ├─ empty.png
 │  ├─ common  --eventHub
 │  │  └─ eventHub.js
 │  ├─ components  --组件目录

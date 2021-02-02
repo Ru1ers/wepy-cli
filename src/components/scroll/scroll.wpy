@@ -1,142 +1,142 @@
 <!-- 分页组件 -->
 <template>
-    <div style="height:100%">
-        <block v-if="scrollOption.refresh.type == 'default'">
-            <scroll-view
-                scroll-y
-                class="scroll"
-                :refresher-enabled="true"
-                :refresher-threshold="100"
-                :refresher-default-style="scrollOption.refresh.style"
-                refresher-background="#f2f2f2"
-                :refresher-triggered="triggered"
-                bindrefresherpulling="onPulling"
-                bindrefresherrefresh="onRefresh"
-                bindrefresherrestore="onRestore"
-                bindscrolltolower="lower"
-                bindscroll="scroll"
-                style="height:100%"
-            >
-                <view
-                    class="inner-empty"
-                    v-if="!scrollOption.pagination.haveData && !isRefreshLoading"
-                >
-                    <image
-                        :src="scrollOption.empty.img"
-                        class="empty-img"
-                        mode="aspectFill"
-                    />
-                </view>
-                <view
-                    class="inner"
-                    v-else
-                >
-                    <slot name="inner" />
-                </view>
-                <block v-if="scrollOption.pagination.haveData">
-                    <view
-                        v-if="isNoneLoading"
-                        class="isLoadMoreLoading"
-                    >
-                        没有更多了
-                    </view>
-                    <block v-else-if="scrollOption.pagination.haveData&&scrollOption.pagination.haveMoreData" />
-                    <view
-                        v-else
-                        class="isLoadMoreLoading"
-                    >
-                        <image
-                            class="ico"
-                            mode="aspectFill"
-                            src="http://upload-images.jianshu.io/upload_images/5726812-95bd7570a25bd4ee.gif"
-                        />
-                        上拉加载中
-                    </view>
-                </block>
-
-            </scroll-view>
-        </block>
-        <block v-else-if="scrollOption.refresh.type == 'diy'">
-            <scroll-view
-                scroll-y
-                class="scroll"
-                style="height:100%"
-                :refresher-enabled="true"
-                :refresher-threshold="scrollOption.refresh.refreshthreshold"
-                :refresher-background="background"
-                refresher-default-style="none"
-                :refresher-triggered="triggered"
-                bindrefresherpulling="onPullingDiy"
-                bindrefresherrefresh="onRefresh"
-                bindrefresherrestore="onRestore"
-                bindscrolltolower="lower"
-                bindscroll="scroll"
-            >
-                <view
-                    slot="refresher"
-                    class="refresh-container"
-                    style="height: {{scrollOption.refresh.refreshthreshold}}px; {{scrollOption.refresh.backgroundImage?'background-image:url('+scrollOption.refresh.backgroundImage+');':''}}"
-                >
-                    <slot
-                        v-if="scrollOption.refresh.diyLevel > 1"
-                        name="refresh"
-                    />
-                    <block v-else>
-                        <view
-                            class="refresh-inner"
-                            v-if="scrollOption.refresh.title.show"
-                            style="color:{{scrollOption.refresh.title.color}};{{scrollOption.refresh.title.shadow?'text-shadow:0 0 '+scrollOption.refresh.title.shadow+'rpx '+scrollOption.refresh.title.color+';':''}}"
-                        >
-                            <view
-                                class="down"
-                                style="transform: rotate({{threshold*180}}deg)"
-                            />
-                            {{scrollOption.refresh.title.text}}
-                        </view>
-                    </block>
-                </view>
-
-                <view
-                    class="inner-empty"
-                    v-if="!scrollOption.pagination.haveData && !isRefreshLoading"
-                >
-                    <image
-                        :src="scrollOption.empty.img"
-                        class="empty-img"
-                        mode="aspectFill"
-                    />
-                </view>
-                <view
-                    class="inner"
-                    wx:else
-                >
-                    <slot name="inner" />
-                </view>
-
-                <block v-if="scrollOption.pagination.haveData">
-                    <view
-                        v-if="isNoneLoading&&scrollOption.pagination.dataIsOne"
-                        class="isLoadMoreLoading"
-                    >
-                        没有更多了
-                    </view>
-                    <block v-else-if="!scrollOption.pagination.dataIsOne" />
-                    <view
-                        v-else
-                        class="isLoadMoreLoading"
-                    >
-                        <image
-                            class="ico"
-                            mode="aspectFill"
-                            src="http://upload-images.jianshu.io/upload_images/5726812-95bd7570a25bd4ee.gif"
-                        />
-                        上拉加载中
-                    </view>
-                </block>
-            </scroll-view>
+  <div style="height:100%">
+    <block v-if="scrollOption.refresh.type == 'default'">
+      <scroll-view
+        scroll-y
+        class="scroll"
+        :refresher-enabled="true"
+        :refresher-threshold="100"
+        :refresher-default-style="scrollOption.refresh.style"
+        refresher-background="#f2f2f2"
+        :refresher-triggered="triggered"
+        bindrefresherpulling="onPulling"
+        bindrefresherrefresh="onRefresh"
+        bindrefresherrestore="onRestore"
+        bindscrolltolower="lower"
+        bindscroll="scroll"
+        style="height:100%"
+      >
+        <view
+          class="inner-empty"
+          v-if="!scrollOption.pagination.haveData && !isRefreshLoading"
+        >
+          <image
+            :src="scrollOption.empty.img"
+            class="empty-img"
+            mode="aspectFill"
+          />
+        </view>
+        <view
+          class="inner"
+          v-else
+        >
+          <slot name="inner" />
+        </view>
+        <block v-if="scrollOption.pagination.haveData">
+          <view
+            v-if="isNoneLoading"
+            class="isLoadMoreLoading"
+          >
+            没有更多了
+          </view>
+          <block v-else-if="scrollOption.pagination.haveData&&scrollOption.pagination.haveMoreData" />
+          <view
+            v-else
+            class="isLoadMoreLoading"
+          >
+            <image
+              class="ico"
+              mode="aspectFill"
+              src="@/assets/images/loading_bottom.gif"
+            />
+            上拉加载中
+          </view>
         </block>
 
-    </div>
+      </scroll-view>
+    </block>
+    <block v-else-if="scrollOption.refresh.type == 'diy'">
+      <scroll-view
+        scroll-y
+        class="scroll"
+        style="height:100%"
+        :refresher-enabled="true"
+        :refresher-threshold="scrollOption.refresh.refreshthreshold"
+        :refresher-background="background"
+        refresher-default-style="none"
+        :refresher-triggered="triggered"
+        bindrefresherpulling="onPullingDiy"
+        bindrefresherrefresh="onRefresh"
+        bindrefresherrestore="onRestore"
+        bindscrolltolower="lower"
+        bindscroll="scroll"
+      >
+        <view
+          slot="refresher"
+          class="refresh-container"
+          style="height: {{scrollOption.refresh.refreshthreshold}}px; {{scrollOption.refresh.backgroundImage?'background-image:url('+scrollOption.refresh.backgroundImage+');':''}}"
+        >
+          <slot
+            v-if="scrollOption.refresh.diyLevel > 1"
+            name="refresh"
+          />
+          <block v-else>
+            <view
+              class="refresh-inner"
+              v-if="scrollOption.refresh.title.show"
+              style="color:{{scrollOption.refresh.title.color}};{{scrollOption.refresh.title.shadow?'text-shadow:0 0 '+scrollOption.refresh.title.shadow+'rpx '+scrollOption.refresh.title.color+';':''}}"
+            >
+              <view
+                class="down"
+                style="transform: rotate({{threshold*180}}deg)"
+              />
+              {{scrollOption.refresh.title.text}}
+            </view>
+          </block>
+        </view>
+
+        <view
+          class="inner-empty"
+          v-if="!scrollOption.pagination.haveData && !isRefreshLoading"
+        >
+          <image
+            :src="scrollOption.empty.img"
+            class="empty-img"
+            mode="aspectFill"
+          />
+        </view>
+        <view
+          class="inner"
+          wx:else
+        >
+          <slot name="inner" />
+        </view>
+
+        <block v-if="scrollOption.pagination.haveData">
+          <view
+            v-if="isNoneLoading&&scrollOption.pagination.dataIsOne"
+            class="isLoadMoreLoading"
+          >
+            没有更多了
+          </view>
+          <block v-else-if="!scrollOption.pagination.dataIsOne" />
+          <view
+            v-else
+            class="isLoadMoreLoading"
+          >
+            <image
+              class="ico"
+              mode="aspectFill"
+              src="@/assets/images/loading_bottom.gif"
+            />
+            上拉加载中
+          </view>
+        </block>
+      </scroll-view>
+    </block>
+
+  </div>
 </template>
 
 <script>
@@ -200,6 +200,7 @@ wepy.component({
       if (this._freshing) return;
       this.triggered = true;
       this._freshing = true;
+      console.log("请求数据")
       this.$wx.triggerEvent('refresh', {
         page: this.scrollOption.pagination.page,
         upTitle: '加载中...'
