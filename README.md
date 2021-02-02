@@ -82,7 +82,7 @@ wepy-cli
 
 ### 脚手架特性
 
-- 1.请求完全使用axios,抛弃了小程序的wx.request的请求方式,对于长期使用vue开发的小伙伴更友好.实例如下:
+- ##### 1.请求完全使用axios,抛弃了小程序的wx.request的请求方式,对于长期使用vue开发的小伙伴更友好.实例如下:
 
 ```
 import request from '@/utils/request';
@@ -101,7 +101,7 @@ export function getList(pageIndex) {
 }
 ```
 
-- 2.强大的请求拦截封装,对axios做了一层拦截,在此代码块可以自定义加载状态或错误信息提示(项目基于vant toast和自定义进度条做了用户反馈,如果不喜欢可以自定义).
+- ##### 2.强大的请求拦截封装,对axios做了一层拦截,在此代码块可以自定义加载状态或错误信息提示(项目基于vant toast和自定义进度条做了用户反馈,如果不喜欢可以自定义).
 
 ```javascript
  if (config.showLoading) {
@@ -121,7 +121,7 @@ export function getList(pageIndex) {
         }
 ```
 
-- 3.利用小程序自带的onAppRoute路由监听,实现简单拦截跳转(与vue-router有差距).
+- ##### 3.利用小程序自带的onAppRoute路由监听,实现简单拦截跳转(与vue-router有差距).
 
 ```javascript
 // 路由白名单
@@ -147,11 +147,11 @@ wx.onAppRoute(async function(res) {
 });
 ```
 
-- 4.按需引入vant,项目里的components文件夹里导入了所有vant组件,但是在打包时只在weapp引入用到的.可在app.wpy全局引入.
+- ##### 4.按需引入vant,项目里的components文件夹里导入了所有vant组件,但是在打包时只在weapp引入用到的.可在app.wpy全局引入.
 
-- 5.store模块化,并且内置了基本登录流程,节省了项目开发时间.
+- ##### 5.store模块化,并且内置了基本登录流程,节省了项目开发时间.
 
-- 6.自带好看的列表下拉加载与上拉刷新.列表统一使用scroll-view做滚动(小程序原生下拉刷新不支持自定义样式),使用方式如下(页面引入组件,页面混入js):
+- ##### 6.自带好看的列表下拉加载与上拉刷新.列表统一使用scroll-view做滚动(小程序原生下拉刷新不支持自定义样式),使用方式如下(页面引入组件,页面混入js):
 
 ```javascript
 //页面引入或全局引入
