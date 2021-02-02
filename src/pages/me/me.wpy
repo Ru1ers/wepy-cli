@@ -1,0 +1,75 @@
+<!-- 我的 -->
+<template>
+  <div class="me-user-info">
+    <div class="me-user-info-show">
+      {{userInfo.nickname}}
+      <div
+        class="me-user-button"
+        v-if="!userInfo.nickname"
+      >
+        <van-button
+          type="default"
+          open-type="getUserInfo"
+          bindgetuserinfo="getUserInfoTap"
+        >登录</van-button>
+      </div>
+
+    </div>
+
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core';
+import store from '@/store';
+import { updateUser } from '@/models/login/Login.js';
+wepy.page({
+  name: 'Me',
+  store,
+  data: {
+    userInfo: {}
+  },
+  computed: {},
+  watch: {
+    '$store.state.user.user': function(value) {
+      console.log('用户信息更新了', value);
+      this.userInfo = value;
+    }
+  },
+  onLoad() {
+    console.log(this);
+    this.userInfo = store.getters['user/user'];
+  },
+
+  onShow() {},
+
+  methods: {
+    async getUserInfoTap(e) {
+      console.log(e);
+      var userInfo = e.$wx.detail.userInfo;
+      console.log(userInfo);
+      var result = await updateUser({
+        nickname: userInfo.nickName, //类型：String  可有字段  备注：用户昵称
+        headimgurl: userInfo.avatarUrl, //类型：String  可有字段  备注：头像
+        sex: userInfo.gender, //类型：String  可有字段  备注：性别 0：未知、1：男、 2：女
+        province: userInfo.province, //类型：String  可有字段  备注：省份
+        city: userInfo.city, //类型：String  可有字段  备注：城市
+        country: userInfo.country //类型：String  可有字段  备注：国家
+      });
+      console.log(result);
+      store.commit('user/LOGIN', result.data.token);
+      store.dispatch('user/getInfo');
+    }
+  }
+});
+</script>
+<style lang='less'>
+</style>
+<config>
+{
+navigationBarTitleText: 'WePY 2.0 Feature Demo',
+usingComponents: {
+  
+}
+}
+</config>

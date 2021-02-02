@@ -1,0 +1,111 @@
+<style lang="less">
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+// 下拉刷新的默认样式
+.refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 30rpx;
+  .wapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .van-loading__spinner {
+      height: 30rpx;
+      max-width: 30rpx;
+    }
+  }
+  .text {
+    margin-left: 30rpx;
+  }
+}
+</style>
+
+<script>
+import wepy from '@wepy/core';
+import eventHub from './common/eventHub';
+import axios from 'axios';
+import mpAdapter from 'axios-miniprogram-adapter';
+import '@/utils/permission.js';
+import { login, getInfo } from '@/models/login/Login.js';
+import { setToken } from '@/utils/auth';
+axios.defaults.adapter = mpAdapter;
+import store from '@/store';
+wepy.app({
+  hooks: {
+    // 操作全局监听
+    // 'before-event': function(data) {
+    //   console.log('before-event', data);
+    // },
+    // // setData全局hook
+    // 'before-setData': function(dirty) {}
+  },
+  globalData: {
+    userInfo: null
+  },
+
+  onLaunch() {
+    var that = this;
+    wx.login({
+      async success(res) {
+        if (res.code) {
+          var result = await login(res.code);
+          console.log(result);
+          store.commit('user/LOGIN', result.data.token);
+          console.log(store);
+          store.dispatch('user/getInfo');
+        } else {
+          console.log('登录失败！' + res.errMsg);
+        }
+      }
+    });
+  },
+
+  methods: {}
+});
+</script>
+<config>
+{
+    pages: [
+      'pages/index/index',
+      'pages/me/me',
+      'pages/list/list'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black'
+    },
+      "tabBar": {
+    "list": [{
+      "pagePath": "pages/index/index",
+      "text": "首页"
+    },{
+      "pagePath": "pages/list/list",
+      "text": "列表"
+    }, {
+      "pagePath": "pages/me/me",
+      "text": "我的"
+    }]
+  },
+  usingComponents: {
+     "scroll": "components/scroll/scroll",
+     "progress":"components/axios-progress/axios-progress",
+    "van-cell": "components/vant/cell/index",
+  "van-cell-group": "components/vant/cell-group/index",
+  "van-button":"components/vant/button/index",
+  "van-toast": "components/vant/toast/index",
+  "van-loading": "components/vant/loading/index"
+  },
+  lazyCodeLoading:'requiredComponents'
+}
+</config>

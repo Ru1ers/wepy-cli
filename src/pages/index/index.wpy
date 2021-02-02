@@ -1,0 +1,111 @@
+<style lang="less">
+input {
+  border: 1rpx solid #ccc;
+  display: inline-block;
+  width: 200rpx;
+  border-radius: 5rpx;
+}
+.info {
+  padding-right: 10rpx;
+}
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+.slide {
+  width: 640rpx;
+  display: flex;
+  border: 1rpx solid #ccc;
+  font-size: 28rpx;
+  align-items: center;
+  box-sizing: border-box;
+  .left {
+    width: 750rpx;
+    padding: 20rpx;
+  }
+  .right {
+    display: flex;
+    .right-item {
+      padding: 20rpx 30rpx;
+      background-color: red;
+      color: #fff;
+    }
+  }
+}
+</style>
+<template>
+  <div class="container">
+    <div
+      class="userinfo"
+      @tap="handleViewTap"
+    >
+      <image
+        class="userinfo-avatar"
+        src="{{ userInfo.avatarUrl }}"
+        background-size="cover"
+      />
+      <div class="userinfo-nickname">{{ userInfo.nickName }}</div>
+    </div>
+    <!--toast /-->
+    <progress id="axios-progress"></progress>
+    <van-toast id="van-toast" />
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core';
+import eventHub from '@/common/eventHub';
+import { mapState } from '@wepy/x';
+import store from '@/store';
+import testMixin from '@/mixins/test';
+import { login } from '@/models/test/test.js';
+
+wepy.page({
+  name: 'Index',
+  store,
+  config: {
+    navigationBarTitleText: 'test'
+  },
+
+  hooks: {},
+
+  mixins: [testMixin],
+
+  data: {
+    userInfo: {}
+  },
+
+  computed: {},
+
+  methods: {},
+
+  created() {},
+  async onLoad() {
+    console.log(this);
+    var that = this;
+    wx.getUserInfo({
+      success(res) {
+        that.userInfo = res.userInfo;
+      }
+    });
+  }
+});
+</script>
+<config>
+{
+    navigationBarTitleText: 'WePY 2.0 Feature Demo',
+    usingComponents: {
+    }
+}
+</config>

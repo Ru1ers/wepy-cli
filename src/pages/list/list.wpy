@@ -1,0 +1,73 @@
+<!-- 列表示例 -->
+<template>
+  <div class="list-scroll-div">
+    <scroll
+      :scrollOption="scrollJd"
+      bindrefresh="refreshJd"
+      bindloadMore="loadMoreJd"
+      bindrefreshPulling="refreshPulling"
+      bindrestore="restore"
+    >
+      <div
+        class="refresh"
+        slot="refresh"
+      >
+        <div class="wapper">
+          <van-loading color="#1989fa" />
+        </div>
+        <div class="text">{{scrollJd.upTitle}}</div>
+      </div>
+      <div slot="inner">
+        <van-cell-group>
+          <van-cell
+            :title="item.title"
+            value="内容"
+            label="描述信息"
+            :border="false"
+            v-for="(item,index) in list"
+            :key="index"
+          />
+        </van-cell-group>
+      </div>
+    </scroll>
+    <progress id="axios-progress"></progress>
+    <van-toast id="van-toast" />
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core';
+import { getList } from '@/models/list/List.js';
+import pagination from '@/mixins/pagination.js';
+wepy.page({
+  data: {
+    list: []
+  },
+  mixins: [pagination],
+  computed: {},
+
+  async onLoad() {
+    console.log(this.$refs);
+  },
+
+  onShow() {},
+
+  methods: {
+    async getListPage(pageIndex) {
+      return await getList(pageIndex);
+    }
+  }
+});
+</script>
+<style lang='less'>
+.list-scroll-div {
+  height: 100vh;
+}
+</style>
+<config>
+{
+navigationBarTitleText: '列表',
+usingComponents: {
+}
+}
+</config>

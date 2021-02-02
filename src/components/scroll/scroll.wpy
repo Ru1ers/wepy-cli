@@ -1,0 +1,333 @@
+<!-- 分页组件 -->
+<template>
+    <div style="height:100%">
+        <block v-if="scrollOption.refresh.type == 'default'">
+            <scroll-view
+                scroll-y
+                class="scroll"
+                :refresher-enabled="true"
+                :refresher-threshold="100"
+                :refresher-default-style="scrollOption.refresh.style"
+                refresher-background="#f2f2f2"
+                :refresher-triggered="triggered"
+                bindrefresherpulling="onPulling"
+                bindrefresherrefresh="onRefresh"
+                bindrefresherrestore="onRestore"
+                bindscrolltolower="lower"
+                bindscroll="scroll"
+                style="height:100%"
+            >
+                <view
+                    class="inner-empty"
+                    v-if="!scrollOption.pagination.haveData && !isRefreshLoading"
+                >
+                    <image
+                        :src="scrollOption.empty.img"
+                        class="empty-img"
+                        mode="aspectFill"
+                    />
+                </view>
+                <view
+                    class="inner"
+                    v-else
+                >
+                    <slot name="inner" />
+                </view>
+                <block v-if="scrollOption.pagination.haveData">
+                    <view
+                        v-if="isNoneLoading"
+                        class="isLoadMoreLoading"
+                    >
+                        没有更多了
+                    </view>
+                    <block v-else-if="scrollOption.pagination.haveData&&scrollOption.pagination.haveMoreData" />
+                    <view
+                        v-else
+                        class="isLoadMoreLoading"
+                    >
+                        <image
+                            class="ico"
+                            mode="aspectFill"
+                            src="http://upload-images.jianshu.io/upload_images/5726812-95bd7570a25bd4ee.gif"
+                        />
+                        上拉加载中
+                    </view>
+                </block>
+
+            </scroll-view>
+        </block>
+        <block v-else-if="scrollOption.refresh.type == 'diy'">
+            <scroll-view
+                scroll-y
+                class="scroll"
+                style="height:100%"
+                :refresher-enabled="true"
+                :refresher-threshold="scrollOption.refresh.refreshthreshold"
+                :refresher-background="background"
+                refresher-default-style="none"
+                :refresher-triggered="triggered"
+                bindrefresherpulling="onPullingDiy"
+                bindrefresherrefresh="onRefresh"
+                bindrefresherrestore="onRestore"
+                bindscrolltolower="lower"
+                bindscroll="scroll"
+            >
+                <view
+                    slot="refresher"
+                    class="refresh-container"
+                    style="height: {{scrollOption.refresh.refreshthreshold}}px; {{scrollOption.refresh.backgroundImage?'background-image:url('+scrollOption.refresh.backgroundImage+');':''}}"
+                >
+                    <slot
+                        v-if="scrollOption.refresh.diyLevel > 1"
+                        name="refresh"
+                    />
+                    <block v-else>
+                        <view
+                            class="refresh-inner"
+                            v-if="scrollOption.refresh.title.show"
+                            style="color:{{scrollOption.refresh.title.color}};{{scrollOption.refresh.title.shadow?'text-shadow:0 0 '+scrollOption.refresh.title.shadow+'rpx '+scrollOption.refresh.title.color+';':''}}"
+                        >
+                            <view
+                                class="down"
+                                style="transform: rotate({{threshold*180}}deg)"
+                            />
+                            {{scrollOption.refresh.title.text}}
+                        </view>
+                    </block>
+                </view>
+
+                <view
+                    class="inner-empty"
+                    v-if="!scrollOption.pagination.haveData && !isRefreshLoading"
+                >
+                    <image
+                        :src="scrollOption.empty.img"
+                        class="empty-img"
+                        mode="aspectFill"
+                    />
+                </view>
+                <view
+                    class="inner"
+                    wx:else
+                >
+                    <slot name="inner" />
+                </view>
+
+                <block v-if="scrollOption.pagination.haveData">
+                    <view
+                        v-if="isNoneLoading&&scrollOption.pagination.dataIsOne"
+                        class="isLoadMoreLoading"
+                    >
+                        没有更多了
+                    </view>
+                    <block v-else-if="!scrollOption.pagination.dataIsOne" />
+                    <view
+                        v-else
+                        class="isLoadMoreLoading"
+                    >
+                        <image
+                            class="ico"
+                            mode="aspectFill"
+                            src="http://upload-images.jianshu.io/upload_images/5726812-95bd7570a25bd4ee.gif"
+                        />
+                        上拉加载中
+                    </view>
+                </block>
+            </scroll-view>
+        </block>
+
+    </div>
+</template>
+
+<script>
+import wepy from '@wepy/core';
+
+wepy.component({
+  options: {
+    multipleSlots: true, // 在组件定义时的选项中启用多slot支持
+    addGlobalClass: true
+  },
+  data: {
+    isRefreshLoading: false,
+    isNoneLoading: false,
+    triggered: false,
+    threshold: 0,
+    upTitle: '下拉刷新',
+    scrollType: 'refresh' // refresh 和 loadMore 两种模式
+  },
+  props: {
+    scrollOption: {
+      type: Object,
+      value: {
+        pagination: {
+          page: 1,
+          // totalPage: 1,
+          haveMoreData: false, //是否还有更多数据
+          limit: 0,
+          haveData: true, //是否有数据
+          dataIsOne: false
+          // length:0
+        },
+        empty: {},
+        refresh: {},
+        loadmore: {
+          type: 'default'
+        },
+        upTitle: ''
+      }
+    },
+    background: {
+      type: String
+    }
+  },
+  computed: {},
+  watch: {
+    'scrollOption.pagination.haveMoreData'(value) {
+      console.log('组件选项改变了', value);
+      this.scrollOption.pagination.haveMoreData = value;
+      this.isNoneLoading = !value;
+    }
+  },
+  attached() {
+    console.log(this.scrollOption);
+  },
+  methods: {
+    onPulling: function() {
+      this.isRefreshLoading = true;
+    },
+    onRefresh() {
+      //   console.log(this.data.scrollOption);
+      if (this._freshing) return;
+      this.triggered = true;
+      this._freshing = true;
+      this.$wx.triggerEvent('refresh', {
+        page: this.scrollOption.pagination.page,
+        upTitle: '加载中...'
+      });
+      setTimeout(() => {
+        this.triggered = false;
+        this._freshing = false;
+      }, 1000);
+    },
+    onRestore(e) {
+      console.log('重置文字为下拉刷新');
+      this.$wx.triggerEvent('restore', {
+        upTitle: '下拉刷新'
+      });
+      setTimeout(() => {
+        this.isRefreshLoading = false;
+        // this.scrollOption.upTitle = '下拉刷新';
+
+        this.threshold = 0;
+      }, 1000);
+    },
+    onPullingDiy: function(evt) {
+      //   console.log(evt);
+      setTimeout(() => {
+        var p = Math.min(evt.$wx.detail.dy / 80, 1);
+        let upTitle = '';
+        if (p < 0.5) {
+          upTitle = '下拉刷新';
+        } else {
+          upTitle = '释放加载';
+        }
+        this.$wx.triggerEvent('refreshPulling', {
+          p: p
+        });
+        this.isRefreshLoading = true;
+        this.threshold = p;
+      }, 300);
+    },
+    lower: function(e) {
+      // console.log(e)
+      if (this.scrollOption.pagination.haveMoreData) {
+        this.$wx.triggerEvent('loadMore');
+      }
+    },
+    scroll: function(e) {
+      this.$wx.triggerEvent('scrolling', {
+        scrollTop: e.$wx.detail.scrollTop
+      });
+      if (this.scrollOption.pagination.haveMoreData) {
+        this.isNoneLoading = false;
+      } else {
+        this.isNoneLoading = true;
+      }
+    }
+  }
+});
+</script>
+
+<style lang='less'>
+.scroll {
+  /* position: relative; */
+  overflow: hidden;
+  z-index: 1;
+}
+
+.scroll .refresh-container {
+  width: 100%;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.scroll .refresh-container .refresh-inner {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  font-size: 28rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scroll .isLoadMoreLoading,
+.scroll .isRefreshLoading {
+  text-align: center;
+  height: 40rpx;
+  line-height: 40rpx;
+  padding: 40rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.scroll .isLoadMoreLoading .ico,
+.scroll .isRefreshLoading .ico {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  margin-right: 10px;
+  -webkit-transform: translateY(-1px);
+  transform: translateY(-1px);
+}
+
+.scroll .inner {
+  min-height: 100%;
+}
+
+.scroll .inner-empty {
+  text-align: center;
+  color: #999;
+  height: 100%;
+  overflow: hidden;
+}
+
+.scroll .inner-empty .empty-img {
+  width: 210rpx;
+  height: 227rpx;
+  margin: 20vw auto 5vh;
+  display: block;
+}
+</style>
+<config>
+{
+navigationBarTitleText: 'WePY 2.0 Feature Demo',
+usingComponents: {
+
+}
+}
+</config>

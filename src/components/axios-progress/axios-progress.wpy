@@ -1,0 +1,137 @@
+<!-- 请求进度条 -->
+<template>
+    <div class="axios-progress">
+        <div
+            class="load-progress"
+            :class="{'hide':!loadProgressData}"
+            style="top:{{CustomBar}}px;"
+        >
+            <div
+                class="load-progress-bar"
+                style="transform: translate3d(-{{100-loadProgressData}}%, 0px, 0px);"
+            ></div>
+            <div class="load-progress-spinner text-green"></div>
+        </div>
+    </div>
+</template>
+
+<script>
+import wepy from '@wepy/core';
+
+wepy.component({
+  data: {
+    loadProgressData: 0,
+    CustomBar: 0,
+    loadIsStart: false
+  },
+
+  computed: {},
+
+  onLoad() {},
+
+  onShow() {},
+
+  methods: {
+    loadProgressStart() {
+      this.loadIsStart = true;
+      this.loadProgressData = this.loadProgressData + 3;
+      if (this.loadProgressData < 100) {
+        setTimeout(() => {
+          this.loadProgressStart();
+        }, 100);
+      }
+      //    else {
+      //     this.loadProgressData = 0;
+      //   }
+    },
+    loadProgressEnd() {
+      this.loadProgressData = 100;
+      setTimeout(() => {
+        this.loadProgressData = 0;
+      }, 500);
+    },
+    loadProgressClear() {
+      console.log('进度条重置了');
+      this.loadProgressData = 0;
+    }
+  }
+});
+</script>
+<style lang='less'>
+.load-progress {
+  pointer-events: none;
+  top: 0;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  z-index: 2000;
+}
+
+.load-progress.hide {
+  display: none;
+}
+
+.load-progress .load-progress-bar {
+  position: relative;
+  width: 100%;
+  height: 4rpx;
+  overflow: hidden;
+  transition: all 200ms ease 0s;
+  background: green;
+}
+
+.load-progress .load-progress-spinner {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  z-index: 2000;
+  display: block;
+}
+
+.load-progress .load-progress-spinner::after {
+  content: '';
+  display: block;
+  width: 24rpx;
+  height: 24rpx;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  border: solid 4rpx transparent;
+  border-top-color: inherit;
+  border-left-color: inherit;
+  border-radius: 50%;
+  -webkit-animation: load-progress-spinner 0.4s linear infinite;
+  animation: load-progress-spinner 0.4s linear infinite;
+}
+
+@-webkit-keyframes load-progress-spinner {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes load-progress-spinner {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+</style>
+<config>
+{
+navigationBarTitleText: 'WePY 2.0 Feature Demo',
+usingComponents: {
+
+}
+}
+</config>

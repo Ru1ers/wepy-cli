@@ -1,0 +1,30 @@
+<!-- 登录页 -->
+<template>
+    <div>这是一个登录页</div>
+</template>
+
+<script>
+import wepy from '@wepy/core';
+
+wepy.page({
+  data: {},
+
+  computed: {},
+
+  onLoad() {},
+
+  onShow() {},
+
+  methods: {}
+});
+</script>
+<style lang='less'>
+</style>
+<config>
+{
+navigationBarTitleText: '登录',
+usingComponents: {
+
+}
+}
+</config>
